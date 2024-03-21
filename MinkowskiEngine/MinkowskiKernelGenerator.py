@@ -64,7 +64,7 @@ def get_kernel_volume(region_type, kernel_size, region_offset, axis_types, dimen
         # 0th: itself, (1, 2) for 0th dim neighbors, (3, 4) for 1th dim ...
         kernel_volume = (torch.sum(torch.IntTensor(kernel_size) - 1) + 1).item()
 
-    elif region_type == RegionType.HYBRID:
+    """elif region_type == RegionType.HYBRID:
         assert reduce(
             lambda k1, k2: k1 > 0 and k2 > 0, kernel_size
         ), "kernel_size must be positive"
@@ -85,7 +85,7 @@ def get_kernel_volume(region_type, kernel_size, region_offset, axis_types, dimen
             axis_types, kernel_size_list, range(dimension)
         ):
             if axis_type == RegionType.HYPER_CROSS:
-                kernel_volume += curr_kernel_size - 1
+                kernel_volume += curr_kernel_size - 1"""
 
     #elif region_type == RegionType.CUSTOM:
     #    assert (
