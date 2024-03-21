@@ -64,28 +64,28 @@ def get_kernel_volume(region_type, kernel_size, region_offset, axis_types, dimen
         # 0th: itself, (1, 2) for 0th dim neighbors, (3, 4) for 1th dim ...
         kernel_volume = (torch.sum(torch.IntTensor(kernel_size) - 1) + 1).item()
 
-    # elif region_type == RegionType.HYBRID:
-    #     assert reduce(
-    #         lambda k1, k2: k1 > 0 and k2 > 0, kernel_size
-    #     ), "kernel_size must be positive"
-    #     assert (
-    #         region_offset is None
-    #     ), "region_offset must be None when region_type is HYBRID"
-    #     kernel_size_list = kernel_size.tolist()
-    #     kernel_volume = 1
-    #     # First HYPER_CUBE
-    #     for axis_type, curr_kernel_size, d in zip(
-    #         axis_types, kernel_size_list, range(dimension)
-    #     ):
-    #         if axis_type == RegionType.HYPER_CUBE:
-    #             kernel_volume *= curr_kernel_size
+    elif region_type == RegionType.HYBRID:
+        assert reduce(
+            lambda k1, k2: k1 > 0 and k2 > 0, kernel_size
+        ), "kernel_size must be positive"
+        assert (
+            region_offset is None
+        ), "region_offset must be None when region_type is HYBRID"
+        kernel_size_list = kernel_size.tolist()
+        kernel_volume = 1
+        # First HYPER_CUBE
+        for axis_type, curr_kernel_size, d in zip(
+            axis_types, kernel_size_list, range(dimension)
+        ):
+            if axis_type == RegionType.HYPER_CUBE:
+                kernel_volume *= curr_kernel_size
 
-    #     # Second, HYPER_CROSS
-    #     for axis_type, curr_kernel_size, d in zip(
-    #         axis_types, kernel_size_list, range(dimension)
-    #     ):
-    #         if axis_type == RegionType.HYPER_CROSS:
-    #             kernel_volume += curr_kernel_size - 1
+        # Second, HYPER_CROSS
+        for axis_type, curr_kernel_size, d in zip(
+            axis_types, kernel_size_list, range(dimension)
+        ):
+            if axis_type == RegionType.HYPER_CROSS:
+                kernel_volume += curr_kernel_size - 1
 
     elif region_type == RegionType.CUSTOM:
         assert (
