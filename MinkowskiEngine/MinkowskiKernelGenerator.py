@@ -81,7 +81,10 @@ def get_kernel_volume(region_type, kernel_size, region_offset, axis_types, dimen
         assert (
             region_offset is None
         ), "region_offset must be None when region_type is HYBRID"
-        kernel_size_list = kernel_size.tolist()
+        if isinstance(kernel_size, list):
+            kernel_size_list = kernel_size
+        else:
+            kernel_size_list = kernel_size.tolist()
         kernel_volume = 1
         # First HYPER_CUBE
         for axis_type, curr_kernel_size, d in zip(
@@ -151,7 +154,7 @@ def convert_region_type(
             reduce(lambda k1, k2: k1 + k2, map(lambda k: k - 1, kernel_size)) + 1
         )
 
-    elif region_type == RegionType.HYBRID:
+    elif region_type == RegionType.CUSTOM:
         assert reduce(
             lambda k1, k2: k1 > 0 and k2 > 0, kernel_size
         ), "kernel_size must be positive"
@@ -170,7 +173,10 @@ def convert_region_type(
             ]
             * dimension
         ]
-        kernel_size_list = kernel_size.tolist()
+        if isinstance(kernel_size, list):
+            kernel_size_list = kernel_size
+        else:
+            kernel_size_list = kernel_size.tolist()
         # First HYPER_CUBE
         for axis_type, curr_kernel_size, d in zip(
             axis_types, kernel_size_list, range(dimension)
@@ -223,17 +229,17 @@ def convert_region_type(
         region_offset = torch.IntTensor(region_offset)
         kernel_volume = int(region_offset.size(0))
 
-    elif region_type == RegionType.CUSTOM:
-        assert (
-            region_offset.numel() > 0
-        ), "region_offset must be non empty when region_type is CUSTOM"
-        assert (
-            region_offset.size(1) == dimension
-        ), "region_offset must have the same dimension as the network"
-        kernel_volume = int(region_offset.size(0))
-        assert isinstance(
-            region_offset.dtype, torch.IntTensor
-        ), "region_offset must be a torch.IntTensor."
+    #elif region_type == RegionType.CUSTOM:
+    #    assert (
+    #        region_offset.numel() > 0
+    #    ), "region_offset must be non empty when region_type is CUSTOM"
+    #    assert (
+    #        region_offset.size(1) == dimension
+    #    ), "region_offset must have the same dimension as the network"
+    #    kernel_volume = int(region_offset.size(0))
+    #    assert isinstance(
+    #        region_offset.dtype, torch.IntTensor
+    #    ), "region_offset must be a torch.IntTensor."
     else:
         raise NotImplementedError()
 
